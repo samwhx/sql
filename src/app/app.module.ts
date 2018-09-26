@@ -16,6 +16,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
 // services
 import { SearchService } from './services/search.service';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { SearchService } from './services/search.service';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    HttpClientModule,
+    HttpModule
   ],
   providers: [SearchService],
   bootstrap: [AppComponent]

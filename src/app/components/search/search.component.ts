@@ -10,6 +10,14 @@ import { SearchService } from '../../services/search.service'; // service
 export class SearchComponent implements OnInit {
 
   types = ['Title', 'Description', 'Both'];
+  films = [];
+
+  searchCriteria = {
+    'offset': 0,
+    'limit': 5,
+    'title': '',
+    'description': ''
+  };
 
   // validator checks called from html for reactive forms
   get type() { return this.searchForm.get('type'); }
@@ -35,14 +43,19 @@ export class SearchComponent implements OnInit {
   // submit button
   onSubmit () {
     console.log ('Form data: ', this.searchForm.value);
-    this.SearchSvc
-      .submitForm(this.searchForm.value)
-      .subscribe((result) => {
-        console.log(result);
-      });
+    this.searchCriteria.title = this.searchForm.value.term;
+    this.searchCriteria.description = this.searchForm.value.term;
+    this.SearchSvc.getFilms(this.searchCriteria).subscribe((results) => {
+      console.log(results);
+      this.films = results;
+    });
+    this.searchForm.reset(); // form reset
   }
 
   ngOnInit() {
+    this.SearchSvc.getFilms(this.searchCriteria).subscribe((results) => {
+      console.log(results);
+      this.films = results;
+    });
   }
-
 }

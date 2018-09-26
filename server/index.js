@@ -2,11 +2,15 @@
 require('dotenv').config()
 const express = require('express')
 const hbs = require('express-handlebars')
-const mysql = require("mysql") 
+const mysql = require("mysql")
+const cors = require('cors')
 
 ////////////////////////////////////METHODS////////////////////////////////////
 //express
 const app = express()
+
+//cors
+app.use(cors())
 
 //handlebars
 app.engine('handlebars', hbs({ defaultLayout: 'index'}))

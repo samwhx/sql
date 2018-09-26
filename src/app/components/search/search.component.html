@@ -34,3 +34,7 @@
   <button mat-raised-button color="primary" type="reset" (click)="reset()" [disabled]="searchForm.pristine" style="margin-left: 1em;">Reset</button>
 </div>
 </form>
+
+<ul *ngFor="let film of films">
+  <li>{{film.title}}, {{film.url}}</li>
+</ul>
