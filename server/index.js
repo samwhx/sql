@@ -17,8 +17,9 @@ app.engine('handlebars', hbs({ defaultLayout: 'index'}))
 app.set('view engine', 'handlebars')
 
 //sql
-const sqlFindAllFilms = "SELECT film_id, title FROM film LIMIT 50"
-const sqlfindFilmbyId = "SELECT film_id, title FROM film WHERE film_id=?"
+const sqlFindAllFilms = "SELECT film_id, title, description FROM film LIMIT ? OFFSET ?"
+const sqlFindFilmbyId = "SELECT film_id, title FROM film WHERE film_id=?"
+const sqlFindFilmbySearchString = "SELECT film_id, title, description FROM film WHERE (title LIKE ?) || (description LIKE ?) LIMIT ? OFFSET ?"
 var pool = mysql.createPool ({ 
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -55,7 +56,8 @@ var makeQuery = (sql, pool) => {
 
 //var turned into promise when makeQuery executes
 var findAllFilms = makeQuery(sqlFindAllFilms, pool)
-var findFilmbyId = makeQuery(sqlfindFilmbyId, pool)
+var findFilmbyId = makeQuery(sqlFindFilmbyId, pool)
+var findFilmbySearchString = makeQuery(sqlFindFilmbySearchString, pool)
 
 ////////////////////////////////////ROUTES////////////////////////////////////
 //GET one film by Id (params)
@@ -74,7 +76,7 @@ app.get('/films', (req, res) => {
   console.info('query >>>>>', req.query)
   console.info('query.filmId >>>>>', req.query.filmId)
   if(typeof(req.query.filmId) === 'undefined'){
-    findAllFilms().then ((results) => {
+    findAllFilms([5,0]).then ((results) => {
       let finalResult = []
       results.forEach((element) => {
         let value = { title: "", url: null }
@@ -92,6 +94,54 @@ app.get('/films', (req, res) => {
   else {
     findFilmbyId([parseInt(req.query.filmId)]).then ((results) => {
       res.json(results)
+    }).catch((error) => {
+      console.info(error)
+      res.status(500).json(error)
+    })
+  }
+})
+
+//GET all films or search string (angular)
+app.get('/api/films', (req, res) => {
+  console.info('query >>>>>', req.query)
+  console.info('offset >>>>>', req.query.offset)
+  console.info('limit >>>>>', req.query.limit)
+  console.info('title >>>>>', req.query.title)
+  console.info('description >>>>>', req.query.description)
+  if(!req.query.title.trim() && !req.query.description.trim()){
+    findAllFilms([parseInt(req.query.limit), parseInt(req.query.offset)]).then ((results) => {
+      let finalResult = []
+      results.forEach((element) => {
+        let value = { title: "", description: "", url: null }
+        value.title = element.title
+        value.description = element.description
+        value.url = `/films/${element.film_id}`
+        finalResult.push(value)
+        // finalResult.push({ title: element.title, description: element.description, url: `/films/${element.film_id}` })
+      })
+      console.info('finalResult: ', finalResult)
+      res.json(finalResult)
+    }).catch((error) => {
+      console.info(error)
+      res.status(500).json(error)
+    })
+  }
+  else {
+    findFilmbySearchString([req.query.title,
+                            req.query.description, 
+                            parseInt(req.query.limit), 
+                            parseInt(req.query.offset)]).then ((results) => {
+      let finalResult = []
+      results.forEach((element) => {
+        let value = { title: "", description: "", url: null }
+        value.title = element.title
+        value.description = element.description
+        value.url = `/films/${element.film_id}`
+        finalResult.push(value)
+        // finalResult.push({ title: element.title, description: element.description, url: `/films/${element.film_id}` })
+      })
+      console.info('finalResult: ', finalResult)
+      res.json(finalResult)
     }).catch((error) => {
       console.info(error)
       res.status(500).json(error)

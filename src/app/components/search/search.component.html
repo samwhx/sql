@@ -35,6 +35,25 @@
 </div>
 </form>
 
-<ul *ngFor="let film of films">
-  <li>{{film.title}}, {{film.url}}</li>
-</ul>
+<table mat-table [dataSource]="films" matSort class="mat-elevation-z8" style="margin-left:1em;">
+  <!-- title column -->
+  <ng-container matColumnDef="title">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+    <td mat-cell *matCellDef="let film"> {{film.title}} </td>
+  </ng-container>
+
+  <!-- description column -->
+  <ng-container matColumnDef="description">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+    <td mat-cell *matCellDef="let film"> {{film.description}} </td>
+  </ng-container>
+
+  <!-- url column -->
+  <ng-container matColumnDef="url">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> URL </th>
+    <td mat-cell *matCellDef="let film" (click)="reset()"><a href="#"> {{film.url}} </a></td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

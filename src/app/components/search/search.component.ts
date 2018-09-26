@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms'; // reactive forms
 import { SearchService } from '../../services/search.service'; // service
+import { MatSort, MatTableDataSource } from '@angular/material'; // sort
 
 @Component({
   selector: 'app-search',
@@ -10,7 +11,11 @@ import { SearchService } from '../../services/search.service'; // service
 export class SearchComponent implements OnInit {
 
   types = ['Title', 'Description', 'Both'];
-  films = [];
+
+  // for table
+  displayedColumns: string[] = ['title', 'description', 'url'];
+  films = new MatTableDataSource();
+  @ViewChild(MatSort) sort: MatSort;
 
   searchCriteria = {
     'offset': 0,
@@ -42,11 +47,24 @@ export class SearchComponent implements OnInit {
 
   // submit button
   onSubmit () {
-    console.log ('Form data: ', this.searchForm.value);
-    this.searchCriteria.title = this.searchForm.value.term;
-    this.searchCriteria.description = this.searchForm.value.term;
+    this.searchCriteria.offset = 0; // reinit
+    this.searchCriteria.limit = 5; // reinit
+    this.searchCriteria.title = ''; // reinit
+    this.searchCriteria.description = ''; // reinit
+    console.log('Form data: ', this.searchForm.value);
+    if (this.searchForm.value.type === 'Title' ) {
+    this.searchCriteria.title = `%${this.searchForm.value.term}%`;
+    }
+    if (this.searchForm.value.type === 'Description' ) {
+      this.searchCriteria.description = `%${this.searchForm.value.term}%`;
+    }
+    if (this.searchForm.value.type === 'Both' ) {
+      this.searchCriteria.title = `%${this.searchForm.value.term}%`;
+      this.searchCriteria.description = `%${this.searchForm.value.term}%`;
+    }
+    console.log('Title:', this.searchCriteria.title, ', Description:', this.searchCriteria.description);
     this.SearchSvc.getFilms(this.searchCriteria).subscribe((results) => {
-      console.log(results);
+      console.log('Suscribed Results; ', results);
       this.films = results;
     });
     this.searchForm.reset(); // form reset
@@ -54,8 +72,9 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.SearchSvc.getFilms(this.searchCriteria).subscribe((results) => {
-      console.log(results);
+      console.log('Suscribed Results; ', results);
       this.films = results;
+      this.films.sort = this.sort;
     });
   }
 }
