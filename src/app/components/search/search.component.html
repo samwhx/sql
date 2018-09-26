@@ -1,0 +1,36 @@
+<!-- toolbar -->
+<mat-toolbar color="primary">Search for Films!</mat-toolbar>
+
+<h3 style="margin-left:1em;">Select a Type and enter your search Term</h3>
+
+<form [formGroup]="searchForm" (ngSubmit)="onSubmit()" novalidate fxLayout="column" fxLayoutAlign="center start" style="margin: 2em;">
+<!-- type -->
+<mat-form-field>
+  <mat-select id="type" placeholder="select a type" formControlName="type" required>
+    <mat-option *ngFor="let type of types" [value]="type">
+        {{type}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<div *ngIf="type.invalid && (type.dirty || type.touched)" class="alert">
+  <div *ngIf="type.errors.required">
+    Type is required.
+  </div>
+</div>
+
+<!-- term -->
+<mat-form-field>
+  <input id="term" matInput placeholder="key in search term" formControlName="term" required>
+</mat-form-field>
+<div *ngIf="term.invalid && (term.dirty || term.touched)" class="alert">
+  <div *ngIf="term.errors.required">
+    Term is required.
+  </div>
+</div>
+
+<!-- submit & reset -->
+<div fxLayout="row">
+  <button mat-raised-button color="primary" type="submit" [disabled]="searchForm.pristine || searchForm.status == 'INVALID'">Search</button>
+  <button mat-raised-button color="primary" type="reset" (click)="reset()" [disabled]="searchForm.pristine" style="margin-left: 1em;">Reset</button>
+</div>
+</form>
