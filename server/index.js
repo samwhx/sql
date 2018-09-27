@@ -41,13 +41,13 @@ var makeQuery = (sql, pool) => {
         }
         console.info('args >>>>> ', args)
         connection.query(sql, args || [], (err, results) => {
+          connection.release();
           if (err) {
             reject (err)
             return
           }
           // console.info('results >>>>> ', results)
           resolve(results)
-          connection.release()
         })
       })
     })
