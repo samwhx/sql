@@ -47,6 +47,7 @@ var makeQuery = (sql, pool) => {
           }
           // console.info('results >>>>> ', results)
           resolve(results)
+          connection.release()
         })
       })
     })

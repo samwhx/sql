@@ -34,10 +34,7 @@ export class SearchComponent implements OnInit {
     'description': ''
   };
 
-  // validator checks called from html for reactive forms
-  get type() { return this.searchForm.get('type'); }
-  get term() { return this.searchForm.get('term'); }
-
+  // reactive forms
   searchForm: FormGroup;
   createFormGroup() {
     return new FormGroup({
@@ -50,6 +47,10 @@ export class SearchComponent implements OnInit {
     this.searchForm = this.createFormGroup();
   }
 
+  // validator checks called from html for reactive forms
+  get type() { return this.searchForm.get('type'); }
+  get term() { return this.searchForm.get('term'); }
+
   // reset button
   reset() {
     this.searchForm.reset();
@@ -57,8 +58,9 @@ export class SearchComponent implements OnInit {
 
   // submit button
   onSubmit () {
-    this.searchCriteria.title = ''; // reinit
-    this.searchCriteria.description = ''; // reinit
+    this.searchCriteria.title = ''; // reset to default
+    this.searchCriteria.description = ''; // reset to default
+    this.showDetails = false; // reset to default
     console.log('Form data: ', this.searchForm.value);
     if (this.searchForm.value.type === 'Title' ) {
     this.searchCriteria.title = `%${this.searchForm.value.term}%`;
@@ -77,10 +79,10 @@ export class SearchComponent implements OnInit {
       this.films.sort = this.sort;
       this.films.paginator = this.paginator;
     });
-    this.searchForm.reset(); // form reset
+    this.searchForm.reset();
   }
 
-  // get film details
+  // get film details when clicking on url
   getFilmDetails(url) {
     console.log('String to be passed in >>>>> ', url.substr(7));
     this.SearchSvc.getFilmDetails(url.substr(7)).subscribe((results) => {
@@ -91,6 +93,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    // init get all data
     this.SearchSvc.getFilms(this.searchCriteria).subscribe((results) => {
       console.log('Suscribed Results; ', results);
       this.films = new MatTableDataSource(results);
