@@ -35,7 +35,7 @@
 </div>
 </form>
 
-<table mat-table [dataSource]="films" matSort class="mat-elevation-z8" style="margin-left:1em;">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="margin-left:1em;" matSort>
   <!-- title column -->
   <ng-container matColumnDef="title">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
@@ -57,3 +57,9 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+
+<mat-paginator [length]="length"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="pageSizeOptions" 
+              (page)="pageEvent = $event">
+</mat-paginator>

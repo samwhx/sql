@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms'; // reactive forms
 import { SearchService } from '../../services/search.service'; // service
-import { MatSort, MatTableDataSource } from '@angular/material'; // sort
+import { MatSort, MatTableDataSource, MatPaginator } from '@angular/material'; // sort
 
 @Component({
   selector: 'app-search',
@@ -14,12 +14,19 @@ export class SearchComponent implements OnInit {
 
   // for table
   displayedColumns: string[] = ['title', 'description', 'url'];
-  films = new MatTableDataSource();
+  films = [];
+  dataSource = (new MatTableDataSource(this.films));
+  // sort
   @ViewChild(MatSort) sort: MatSort;
+  // paginator
+  length = 1000;
+  pageSize = 5;
+  pageSizeOptions: number[] = [5, 10, 25, 100];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   searchCriteria = {
     'offset': 0,
-    'limit': 5,
+    'limit': 1000,
     'title': '',
     'description': ''
   };
@@ -66,6 +73,9 @@ export class SearchComponent implements OnInit {
     this.SearchSvc.getFilms(this.searchCriteria).subscribe((results) => {
       console.log('Suscribed Results; ', results);
       this.films = results;
+      this.dataSource = new MatTableDataSource(this.films);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
     });
     this.searchForm.reset(); // form reset
   }
@@ -74,7 +84,9 @@ export class SearchComponent implements OnInit {
     this.SearchSvc.getFilms(this.searchCriteria).subscribe((results) => {
       console.log('Suscribed Results; ', results);
       this.films = results;
-      this.films.sort = this.sort;
+      this.dataSource = new MatTableDataSource(this.films);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
     });
   }
 }
