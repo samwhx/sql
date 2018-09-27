@@ -35,7 +35,7 @@
 </div>
 </form>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="margin-left:1em;" matSort>
+<table mat-table [dataSource]="films" class="mat-elevation-z8" style="margin-left:1em;" matSort>
   <!-- title column -->
   <ng-container matColumnDef="title">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
@@ -66,7 +66,7 @@
 
 <div *ngIf="showDetails">
 <h3 style="margin-left:1em;">Details</h3>
-  <table mat-table [dataSource]="dataSourceForDetails" class="mat-elevation-z8" style="margin-left:1em;">
+  <table mat-table [dataSource]="filmDetails" class="mat-elevation-z8" style="margin-left:1em;">
     <!-- title column -->
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef > Title </th>
