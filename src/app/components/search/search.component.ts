@@ -10,12 +10,19 @@ import { MatSort, MatTableDataSource, MatPaginator } from '@angular/material'; /
 })
 export class SearchComponent implements OnInit {
 
+  // list of types for selection
   types = ['Title', 'Description', 'Both'];
+
+  // for showing details of film whem clicking on the film id
+  showDetails = false;
+  filmDetails = [];
 
   // for table
   displayedColumns: string[] = ['title', 'description', 'url'];
+  displayedColumnsForDetails: string[] = ['title', 'description', 'release'];
   films = [];
   dataSource = (new MatTableDataSource(this.films));
+  dataSourceForDetails = (new MatTableDataSource(this.filmDetails));
   // sort
   @ViewChild(MatSort) sort: MatSort;
   // paginator
@@ -74,6 +81,17 @@ export class SearchComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
     });
     this.searchForm.reset(); // form reset
+  }
+
+  // get film details
+  getFilmDetails(url) {
+    console.log('String to be passed in >>>>> ', url.substr(7));
+    this.SearchSvc.getFilmDetails(url.substr(7)).subscribe((results) => {
+      console.log('Suscribed Results; ', results);
+      this.filmDetails = results;
+      this.dataSourceForDetails = (new MatTableDataSource(this.filmDetails));
+    });
+    this.showDetails = true;
   }
 
   ngOnInit() {

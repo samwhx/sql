@@ -51,7 +51,7 @@
   <!-- url column -->
   <ng-container matColumnDef="url">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> URL </th>
-    <td mat-cell *matCellDef="let film" (click)="reset()"><a href="#"> {{film.url}} </a></td>
+    <td mat-cell *matCellDef="let film" (click)="getFilmDetails(film.url)"><a href="#"> {{film.url}} </a></td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -63,3 +63,29 @@
               [pageSizeOptions]="pageSizeOptions" 
               (page)="pageEvent = $event">
 </mat-paginator>
+
+<div *ngIf="showDetails">
+<h3 style="margin-left:1em;">Details</h3>
+  <table mat-table [dataSource]="dataSourceForDetails" class="mat-elevation-z8" style="margin-left:1em;">
+    <!-- title column -->
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef > Title </th>
+      <td mat-cell *matCellDef="let filmDetail"> {{filmDetail.title}} </td>
+    </ng-container>
+  
+    <!-- description column -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef > Description </th>
+      <td mat-cell *matCellDef="let filmDetail"> {{filmDetail.description}} </td>
+    </ng-container>
+  
+    <!-- url column -->
+    <ng-container matColumnDef="release">
+      <th mat-header-cell *matHeaderCellDef > Release Year </th>
+      <td mat-cell *matCellDef="let filmDetail"> {{filmDetail.release_year}} </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsForDetails"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsForDetails;"></tr>
+  </table>
+</div>

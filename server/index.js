@@ -18,7 +18,7 @@ app.set('view engine', 'handlebars')
 
 //sql
 const sqlFindAllFilms = "SELECT film_id, title, description FROM film"
-const sqlFindFilmbyId = "SELECT film_id, title FROM film WHERE film_id=?"
+const sqlFindFilmbyId = "SELECT * FROM film WHERE film_id=?"
 const sqlFindFilmbySearchString = "SELECT film_id, title, description FROM film WHERE (title LIKE ?) || (description LIKE ?)"
 var pool = mysql.createPool ({ 
   host: process.env.DB_HOST,
@@ -101,6 +101,7 @@ app.get('/films', (req, res) => {
   }
 })
 
+////////////////////////////////////API FOR ANGULAR////////////////////////////////////
 //GET all films or search string (angular)
 app.get('/api/films', (req, res) => {
   console.info('query >>>>>', req.query)
@@ -143,6 +144,16 @@ app.get('/api/films', (req, res) => {
       res.status(500).json(error)
     })
   }
+})
+//GET one film by Id (params)
+app.get('/api/films/:filmId', (req, res) => {
+  console.info('params >>>>>', req.params);
+  findFilmbyId([parseInt(req.params.filmId)]).then ((results) => {
+    res.json(results)
+  }).catch((error) => {
+    console.info(error)
+    res.status(500).json(error)
+  })
 })
 
 ////////////////////////////////////LISTEN////////////////////////////////////

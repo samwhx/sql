@@ -13,10 +13,13 @@ export class SearchService {
   constructor(private http: HttpClient) { }
 
   getFilms(criteria): Observable<any> {
-    // tslint:disable-next-line:max-line-length
     this.finalSearchCriteria = `/api/films?title=${criteria.title}&description=${criteria.description}`;
     console.log(this.finalSearchCriteria);
     return this.http.get(`${environment.api_url}${this.finalSearchCriteria}`);
+  }
+
+  getFilmDetails(criteria): Observable<any> {
+    return this.http.get(`${environment.api_url}/api/films/${criteria}`);
   }
 
 }
