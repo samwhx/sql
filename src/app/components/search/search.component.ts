@@ -25,8 +25,6 @@ export class SearchComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   searchCriteria = {
-    'offset': 0,
-    'limit': 1000,
     'title': '',
     'description': ''
   };
@@ -54,8 +52,6 @@ export class SearchComponent implements OnInit {
 
   // submit button
   onSubmit () {
-    this.searchCriteria.offset = 0; // reinit
-    this.searchCriteria.limit = 5; // reinit
     this.searchCriteria.title = ''; // reinit
     this.searchCriteria.description = ''; // reinit
     console.log('Form data: ', this.searchForm.value);

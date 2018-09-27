@@ -14,7 +14,7 @@ export class SearchService {
 
   getFilms(criteria): Observable<any> {
     // tslint:disable-next-line:max-line-length
-    this.finalSearchCriteria = `/api/films?offset=${criteria.offset}&limit=${criteria.limit}&title=${criteria.title}&description=${criteria.description}`;
+    this.finalSearchCriteria = `/api/films?title=${criteria.title}&description=${criteria.description}`;
     console.log(this.finalSearchCriteria);
     return this.http.get(`${environment.api_url}${this.finalSearchCriteria}`);
   }

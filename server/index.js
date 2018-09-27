@@ -17,9 +17,9 @@ app.engine('handlebars', hbs({ defaultLayout: 'index'}))
 app.set('view engine', 'handlebars')
 
 //sql
-const sqlFindAllFilms = "SELECT film_id, title, description FROM film LIMIT ? OFFSET ?"
+const sqlFindAllFilms = "SELECT film_id, title, description FROM film"
 const sqlFindFilmbyId = "SELECT film_id, title FROM film WHERE film_id=?"
-const sqlFindFilmbySearchString = "SELECT film_id, title, description FROM film WHERE (title LIKE ?) || (description LIKE ?) LIMIT ? OFFSET ?"
+const sqlFindFilmbySearchString = "SELECT film_id, title, description FROM film WHERE (title LIKE ?) || (description LIKE ?)"
 var pool = mysql.createPool ({ 
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -76,7 +76,7 @@ app.get('/films', (req, res) => {
   console.info('query >>>>>', req.query)
   console.info('query.filmId >>>>>', req.query.filmId)
   if(typeof(req.query.filmId) === 'undefined'){
-    findAllFilms([5,0]).then ((results) => {
+    findAllFilms().then ((results) => {
       let finalResult = []
       results.forEach((element) => {
         let value = { title: "", url: null }
@@ -104,12 +104,10 @@ app.get('/films', (req, res) => {
 //GET all films or search string (angular)
 app.get('/api/films', (req, res) => {
   console.info('query >>>>>', req.query)
-  console.info('offset >>>>>', req.query.offset)
-  console.info('limit >>>>>', req.query.limit)
   console.info('title >>>>>', req.query.title)
   console.info('description >>>>>', req.query.description)
   if(!req.query.title.trim() && !req.query.description.trim()){
-    findAllFilms([parseInt(req.query.limit), parseInt(req.query.offset)]).then ((results) => {
+    findAllFilms().then ((results) => {
       let finalResult = []
       results.forEach((element) => {
         let value = { title: "", description: "", url: null }
@@ -128,9 +126,7 @@ app.get('/api/films', (req, res) => {
   }
   else {
     findFilmbySearchString([req.query.title,
-                            req.query.description, 
-                            parseInt(req.query.limit), 
-                            parseInt(req.query.offset)]).then ((results) => {
+                            req.query.description]).then ((results) => {
       let finalResult = []
       results.forEach((element) => {
         let value = { title: "", description: "", url: null }
